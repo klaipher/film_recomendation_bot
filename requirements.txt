@@ -1,0 +1,11 @@
+aiohttp
+aiogram
+click
+loguru
+envparse
+apscheduler
+tortoise-orm[accel]
+python-telegram-bot-pagination
+lxml
+beautifulsoup4
+selenium
