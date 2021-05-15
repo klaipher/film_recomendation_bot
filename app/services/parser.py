@@ -1,7 +1,10 @@
 import asyncio
+import pathlib
+import re
 from pprint import pprint
 from typing import List
 
+import aiohttp
 from aiogram import Dispatcher
 from aiogram.utils.executor import Executor
 from bs4 import BeautifulSoup
@@ -10,15 +13,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.config import res_dir
+from app.config import res_dir, movie_image
 from app.misc import loop, asyncio_executor
-from app.models.movie import Movie, Genre, Actor, Director
+from app.models.movie import Movie, Genre, Actor, Director, MovieImage
 
 KINORIUM_BASE_URL = "https://ua.kinorium.com"
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 browser = webdriver.Chrome(options=chrome_options, executable_path=res_dir / "chromedriver.exe")
+
+image_name_re = re.compile(r"\d+\.jpg")
 
 
 def parse_movies_on_page(page: int, per_page: int = 200) -> List[dict]:
@@ -64,9 +69,21 @@ def parse_movies_on_page(page: int, per_page: int = 200) -> List[dict]:
                 "itemprop": "director"
             })
         })
+        movie["image_url"] = movie_page.find("img", {"class": ["movie_gallery_item", "movie_gallery_poster"]}).get("src")
         movies.append(movie)
         pprint(movie)
     return movies
+
+
+async def download_image(url: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status == 200:
+                image_name = re.findall(image_name_re, url)[0]
+                image_path = movie_image / image_name
+                with image_path.open("wb") as f:
+                    f.write(await resp.read())
+    return image_name
 
 
 async def main():
@@ -74,11 +91,17 @@ async def main():
         movies = await loop.run_in_executor(asyncio_executor, parse_movies_on_page, page, 200)
         await asyncio.sleep(0.5)
         for movie in movies:
+            image_name = await download_image(movie["image_url"])
+            image = await MovieImage.create(
+                url=movie["image_url"],
+                file_name=image_name
+            )
             genres = [(await Genre.get_or_create(name=genre))[0] for genre in movie["genres"]]
             directors = [(await Director.get_or_create(name=director))[0] for director in movie["directors"]]
             actors = [(await Actor.get_or_create(name=actor))[0] for actor in movie["actors"]]
             db_movie = await Movie.create(
                 name=movie["name"],
+                image=image,
                 year=movie["year"],
                 description=movie["description"]
             )
@@ -87,9 +110,8 @@ async def main():
             await db_movie.actors.add(*actors)
 
 
-
 async def on_startup(_dp: Dispatcher):
-    await main()
+    pass
 
 
 def setup(executor: Executor):

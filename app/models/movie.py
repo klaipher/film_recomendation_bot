@@ -7,6 +7,9 @@ from app.models.base import AbstractBaseModel, TimestampedMixin
 
 class Movie(TimestampedMixin, AbstractBaseModel):
     name = fields.CharField(max_length=255)
+    image: fields.OneToOneRelation = fields.OneToOneField(
+        "models.MovieImage", to_field="id"
+    )
     genres: fields.ManyToManyRelation[Genre] = fields.ManyToManyField(
         "models.Genre", through="movie_genre", to_field="id"
     )
@@ -34,6 +37,18 @@ class Genre(AbstractBaseModel):
 
     def __repr__(self):
         return f"<Genre: {self.name}"
+
+
+class MovieImage(AbstractBaseModel, TimestampedMixin):
+    url = fields.CharField(max_length=500)
+    file_id = fields.CharField(max_length=500, null=True)
+    file_name = fields.CharField(max_length=500)
+
+    class Meta:
+        table = "movie_images"
+
+    def __repr__(self):
+        return f"<Image: {self.url}"
 
 
 class Director(AbstractBaseModel):

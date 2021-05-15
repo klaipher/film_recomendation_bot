@@ -25,6 +25,7 @@ __all__ = [
     "delete_message_by_data_id",
     "create_fake_message",
     "start_mailing",
+    "edit_message_and_delete_reply_markup",
 ]
 
 
@@ -76,6 +77,10 @@ async def clear_reply_kb(message: types.Message, after: int = 1, text: str = "ğŸ
 
 def create_fake_message(user_id: int) -> types.Message:
     return types.Message(from_user=types.User(id=user_id), chat=types.Chat(id=user_id))
+
+
+async def edit_message_and_delete_reply_markup(message: types.Message):
+    await message.edit_reply_markup(None)
 
 
 async def start_mailing(message: types.Message):
