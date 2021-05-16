@@ -30,9 +30,6 @@ class Movie(TimestampedMixin, AbstractBaseModel):
     def __repr__(self):
         return f"<Movie: {self.name}"
 
-    def __hash__(self):
-        return hash(self.id)
-
 
 class Genre(AbstractBaseModel):
     name = fields.CharField(max_length=255)

@@ -9,4 +9,3 @@ python-telegram-bot-pagination
 lxml
 beautifulsoup4
 selenium
-numpy
