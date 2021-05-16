@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import List
+
 from tortoise import fields
 
 from app.models.base import AbstractBaseModel, TimestampedMixin
@@ -27,6 +29,9 @@ class Movie(TimestampedMixin, AbstractBaseModel):
 
     def __repr__(self):
         return f"<Movie: {self.name}"
+
+    def __hash__(self):
+        return hash(self.id)
 
 
 class Genre(AbstractBaseModel):

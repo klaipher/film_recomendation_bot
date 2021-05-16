@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Union
+from typing import Tuple, Union
 
 from aiogram import types
 from aiogram.utils.exceptions import TelegramAPIError
@@ -35,4 +35,4 @@ async def gm_movie_view(
             file_id, message_id = await send_photo_by_file(message, text, movie_info["image_file_name"], reply_markup)
     else:
         file_id, message_id = await send_photo_by_file(message, text, movie_info["image_file_name"], reply_markup)
-    return message_id, file_id
+    return file_id, message_id
