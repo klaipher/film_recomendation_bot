@@ -21,14 +21,14 @@ async def gen_view_selected_movie_kb(
     pg_buttons = get_pagination_buttons(pages, page, view_selected_movie_cb.new("manage", "{page}", 0, 0))
 
     if selected_movies:
-        for rates_row in gen_rates_kb(selected_movies[0].id):
+        for rates_row in gen_rates_kb(selected_movies[0].movie_id): # noqa
             kb.row(*rates_row)
         kb.add(
             types.InlineKeyboardButton(
                 "Видалити з обраних",
-                callback_data=view_selected_movie_cb.new("delete", page, selected_movies[0].id, 0))
+                callback_data=view_selected_movie_cb.new("delete", page, selected_movies[0].movie_id, 0)) # noqa
         )
         kb.row(*pg_buttons)
-        return selected_movies[0].id, kb
+        return selected_movies[0].movie_id, kb # noqa
     else:
         return None, None

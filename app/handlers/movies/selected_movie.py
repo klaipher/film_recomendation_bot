@@ -56,5 +56,5 @@ async def rate_selected_movie(call: types.CallbackQuery, state: FSMContext, call
 async def rate_selected_movie(call: types.CallbackQuery, state: FSMContext, callback_data: dict):
     await edit_message_and_delete_reply_markup(call.message)
     movie_id = int(callback_data["movie_id"])
-    await (await SelectedMovie.get(id=movie_id)).delete()
+    await (await SelectedMovie.get(movie_id=movie_id, user_id=call.from_user.id)).delete()
     await send_selected_movie(call.message, state, call.from_user.id, 1)

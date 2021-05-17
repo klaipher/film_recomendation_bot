@@ -46,13 +46,13 @@ async def gen_view_recommended_movie_kb(
             user_id=user_id,
             rating__gte=7
     ).all().prefetch_related("movie"):
-        actors_id.update(actor.id for actor in await movie.movie.actors.all())
-        directors_id.update(director.id for director in await movie.movie.directors.all())
+        actors_id.update(actor.id for actor in await movie.movie.actors.limit(3))
+        directors_id.update(director.id for director in await movie.movie.directors.all().limit(1))
     selected_movies = await Movie.filter(
-        Q(
             Q(id__not_in=excluded_movie_id),
-            Q(genres=genre_id)
-        ), Q(Q(actors__in=actors_id), Q(directors__in=directors_id), join_type="OR")).distinct().all()
+            Q(genres=genre_id),
+            Q(actors__in=actors_id) | Q(directors__in=directors_id)
+    ).distinct().all()
 
     if selected_movies:
         pages = len(selected_movies)

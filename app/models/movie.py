@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from tortoise import fields
 
 from app.models.base import AbstractBaseModel, TimestampedMixin
