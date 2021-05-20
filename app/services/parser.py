@@ -1,7 +1,6 @@
 import asyncio
-import pathlib
+import platform
 import re
-from pprint import pprint
 from typing import List
 
 import aiohttp
@@ -21,7 +20,11 @@ KINORIUM_BASE_URL = "https://ua.kinorium.com"
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
-browser = webdriver.Chrome(options=chrome_options, executable_path=res_dir / "chromedriver.exe")
+if platform.system() == "Linux":
+    path_to_driver = res_dir / "chromedriver"
+else:
+    path_to_driver = res_dir / "chromedriver.exe"
+browser = webdriver.Chrome(options=chrome_options, executable_path=path_to_driver)
 
 image_name_re = re.compile(r"\d+\.jpg")
 
