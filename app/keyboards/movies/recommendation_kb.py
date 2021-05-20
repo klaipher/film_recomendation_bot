@@ -47,7 +47,7 @@ async def gen_view_recommended_movie_kb(
             rating__gte=7
     ).all().prefetch_related("movie"):
         actors_id.update(actor.id for actor in await movie.movie.actors.limit(3))
-        directors_id.update(director.id for director in await movie.movie.directors.all().limit(1))
+        directors_id.update(director.id for director in await movie.movie.directors.limit(1))
     selected_movies = await Movie.filter(
             Q(id__not_in=excluded_movie_id),
             Q(genres=genre_id),

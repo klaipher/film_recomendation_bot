@@ -46,7 +46,7 @@ def parse_movies_on_page(page: int, per_page: int = 200) -> List[dict]:
                 "movie-title__text",
                 "filmList__item-title-link-popup",
                 "link-info-movie-type-film"]
-            }).text.strip().replace("\xa0", " ").replace("\u200b", "").replace("\xa0", " "),
+            }).text.strip().replace("\xa0", " ").replace("\u200b", ""),
             "year": raw_movie.find("div", {"class": "select-wrap"}).find("span").text.split(",")[-1].strip(),
         }
         movie_id = raw_movie.find("div", {"class": ["info-box", "filmList__item-title-wrap"]}).get("rel")
@@ -71,7 +71,6 @@ def parse_movies_on_page(page: int, per_page: int = 200) -> List[dict]:
         })
         movie["image_url"] = movie_page.find("img", {"class": ["movie_gallery_item", "movie_gallery_poster"]}).get("src")
         movies.append(movie)
-        pprint(movie)
     return movies
 
 
