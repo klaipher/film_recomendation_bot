@@ -17,14 +17,14 @@ from app.misc import loop, asyncio_executor
 from app.models.movie import Movie, Genre, Actor, Director, MovieImage
 
 KINORIUM_BASE_URL = "https://ua.kinorium.com"
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-gpu")
-if platform.system() == "Linux":
-    path_to_driver = res_dir / "chromedriver"
-else:
+if platform.system() == "Windows":
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
     path_to_driver = res_dir / "chromedriver.exe"
-browser = webdriver.Chrome(options=chrome_options, executable_path=path_to_driver)
+    browser = webdriver.Chrome(options=chrome_options, executable_path=path_to_driver)
+else:
+    browser = None
 
 image_name_re = re.compile(r"\d+\.jpg")
 
