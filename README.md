@@ -12,7 +12,7 @@ Telegram Bot written in Python for getting film recomendation.
 
 # Installation 
 
-Set your bot's token, username and other settings in config.yaml, then execute:
+Set your bot's token in .env, then execute:
 
 1. `python -m venv venv & . venv/bin/activate`
 3. `pip install -r requirements.txt`
